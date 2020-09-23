@@ -1,0 +1,38 @@
+service: covid-19-data
+frameworkVersion: ">=2.1.1"
+
+custom:
+  bucket: "data.covid-19.drunkard-pig.com"
+
+provider:
+  name: aws
+  runtime: nodejs12.x
+  region: ap-east-1
+  iamRoleStatements:
+    - Effect: Allow
+      Action:
+        - s3:GetObject
+        - s3:GetObjectAcl
+        - s3:PutObject
+        - s3:PutObjectAcl
+      Resource: "arn:aws:s3:::${self:custom.bucket}/*"
+    - Effect: Allow
+      Action:
+        - s3:ListBucket
+      Resource: "arn:aws:s3:::${self:custom.bucket}"
+
+functions:
+  import-covid-19-data:
+    handler: import-data/import-data-handler.importCovid19Data
+    environment:
+      DATA_URL: "https://cors-anywhere.herokuapp.com/https://covid19.who.int/page-data/table/page-data.json"
+      BUCKET: ${self:custom.bucket}
+      MAX_FILES_ALLOWED: 3
+
+resources:
+  # AWS CloudFormation Template
+  Resources:
+    DataBucket:
+      Type: AWS::S3::Bucket
+      Properties:
+        BucketName: ${self:custom.bucket}

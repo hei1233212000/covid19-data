@@ -1,0 +1,10 @@
+{
+  "name": "covid-19-data",
+  "description": "Fetch the Covid-19 data and then upload the json file to a S3 bucket.",
+  "version": "1.0.0",
+  "dependencies": {
+    "aws-sdk": "^2.756.0",
+    "dateformat": "^3.0.3",
+    "node-fetch": "^2.6.1"
+  }
+}
