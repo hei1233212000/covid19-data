@@ -15,6 +15,7 @@ provider:
         - s3:GetObjectAcl
         - s3:PutObject
         - s3:PutObjectAcl
+        - s3:DeleteObject
       Resource: "arn:aws:s3:::${self:custom.bucket}/*"
     - Effect: Allow
       Action:
@@ -25,7 +26,7 @@ functions:
   import-covid-19-data:
     handler: import-data/import-data-handler.importCovid19Data
     environment:
-      DATA_URL: "https://cors-anywhere.herokuapp.com/https://covid19.who.int/page-data/table/page-data.json"
+      DATA_URL: "https://covid19.who.int/page-data/table/page-data.json"
       BUCKET: ${self:custom.bucket}
       MAX_FILES_ALLOWED: 3
 
