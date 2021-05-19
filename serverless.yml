@@ -1,11 +1,6 @@
 service: covid19-data
 frameworkVersion: '2'
 
-custom:
-  region: ap-southeast-1
-  project: covid-19
-  bucket: "data.covid-19.drunkard-pig.com"
-
 provider:
   name: aws
   region: ${opt:region, self:custom.region}
@@ -17,18 +12,16 @@ provider:
   iam:
     role:
       statements:
-      - Effect: Allow
-        Action:
-          - s3:GetObject
-          - s3:GetObjectAcl
-          - s3:PutObject
-          - s3:PutObjectAcl
-          - s3:DeleteObject
-        Resource: "arn:aws:s3:::${self:custom.bucket}/*"
-      - Effect: Allow
-        Action:
-          - s3:ListBucket
-        Resource: "arn:aws:s3:::${self:custom.bucket}"
+        - Effect: Allow
+          Action:
+            - s3:PutObject
+            - s3:PutObjectAcl
+          Resource: "arn:aws:s3:::${self:custom.bucket}/*"
+
+custom:
+  region: ap-southeast-1
+  project: covid-19
+  bucket: "data.covid-19.drunkard-pig.com"
 
 functions:
   import-covid-19-data:
@@ -39,7 +32,6 @@ functions:
     environment:
       DATA_URL: "https://covid19.who.int/page-data/table/page-data.json"
       BUCKET: ${self:custom.bucket}
-      MAX_FILES_ALLOWED: 2
 
 resources:
   # AWS CloudFormation Template
@@ -48,3 +40,5 @@ resources:
       Type: AWS::S3::Bucket
       Properties:
         BucketName: ${self:custom.bucket}
+        VersioningConfiguration:
+          Status: Enabled
