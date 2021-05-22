@@ -1,0 +1,19 @@
+AWSTemplateFormatVersion: '2010-09-09'
+
+Description: Create cert for doamin
+
+Resources:
+  Covid19DataCertificate:
+    Type: AWS::CertificateManager::Certificate
+    Properties:
+      DomainName: data.covid-19.drunkard-pig.com
+      ValidationMethod: DNS
+      Tags:
+        - Key: project
+          Value: covid-19
+
+Outputs:
+  Covid19DataCertificateArn:
+    Description: The ARN of the cert
+    Value:
+      Ref: Covid19DataCertificate

@@ -13,3 +13,25 @@ Therefore, I fetch the data periodically and then save it into S3, there is an e
 
 == Deployment
 run `sls deploy`
+
+== Deployment
+=== Prerequisites
+- AWS CLI 2+
+- Serverless 2+
+
+=== Pre deployment (create cert)
+As creat cert takes very long time, so, we should create the cert before everything
+Besides, we have to create the cert in `us-east-1`
+
+1. run `aws --region us-east-1 cloudformation create-stack --stack-name create-covid-19-data-cert --template-body file://deployment/create-cert.yml --tags Key=project,Value=covid-19`
+2. Go to AWS cert manager page and validate the cert (add CNAME record in Route53)
+3. wait for the validation to be completed
+4. capture the ARN in the cloudformation stack output
+
+=== Deploy infrastructure
+we could run the serverless deployment to deploy the infrastructure
+
+- run `serverless deploy --stage prod --certArn {cert arn captured from above}`
+
+=== Data endpoint
+https://data.covid-19.drunkard-pig.com/covid19-data.gzip
