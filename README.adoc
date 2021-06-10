@@ -1,8 +1,8 @@
 == COVID-19 Data Provider
 This project is going to make an endpoint to provide the data of COVID-19
 
-The https://covid19.who.int/page-data/table/page-data.json[COVID-19 data] is from https://www.who.int/[WHO].
-However, WHO restricts its data by using CORS, so I also use the https://cors-anywhere.herokuapp.com/[CORS Anywhere] to by pass CORS.
+The https://covid19.who.int/page-data/table/page-data.json[COVID-19 data,window=_blank] is from https://www.who.int/[WHO,window=_blank].
+However, WHO restricts its data by using CORS, so I also use the https://cors-anywhere.herokuapp.com/[CORS Anywhere,window=_blank] to bypass CORS.
 Unfortunately, I found that the CORS Anywhere is not very stable that sometimes it could not be reached and there is latency issue.
 Therefore, I fetch the data periodically and then save it into S3, there is an endpoint hosted by me to bridge the data request to the saved data in S3.
 
