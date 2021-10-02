@@ -1,10 +1,21 @@
 service: covid19-data
 frameworkVersion: '2'
 
+package:
+  exclude:
+    - .idea/**
+    - deployment/**
+    - '*.sh'
+    - package.json
+    - package-lock.json
+    - README.adoc
+    - serverless.yml
+
 provider:
   name: aws
   region: ${opt:region, self:custom.region}
   runtime: nodejs12.x
+  timeout: 30 # in second
   stackName: ${self:service}-stack
   stackTags: # Optional CF stack tags
     project: ${self:custom.project}

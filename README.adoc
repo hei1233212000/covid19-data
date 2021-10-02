@@ -12,9 +12,6 @@ Therefore, I fetch the data periodically and then save it into S3, there is an e
 - serverless
 
 == Deployment
-run `sls deploy`
-
-== Deployment
 === Prerequisites
 - AWS CLI 2+
 - Serverless 2+
