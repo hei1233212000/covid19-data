@@ -67,17 +67,15 @@ const convertToCovid19Data = (headerLines, contentLines) => {
     const cumulativeDeathsIndex = headerLines.indexOf('Cumulative_deaths')
     const data = contentLines.map(line => {
         const tokens = line.split(',');
-        return {
-            data: [
-                getStringValue(tokens, regionIndex),
-                getStringValue(tokens, countryCodeIndex),
-                new Date(getStringValue(tokens, dateIndex)).getTime(),
-                getIntegerValue(tokens, newDeathsIndex),
-                getIntegerValue(tokens, cumulativeDeathsIndex),
-                getIntegerValue(tokens, newCasesIndex),
-                getIntegerValue(tokens, cumulativeCasesIndex)
-            ]
-        }
+        return [
+            getStringValue(tokens, regionIndex),
+            getStringValue(tokens, countryCodeIndex),
+            new Date(getStringValue(tokens, dateIndex)).getTime(),
+            getIntegerValue(tokens, newDeathsIndex),
+            getIntegerValue(tokens, cumulativeDeathsIndex),
+            getIntegerValue(tokens, newCasesIndex),
+            getIntegerValue(tokens, cumulativeCasesIndex)
+        ]
     })
 
     return {
@@ -97,18 +95,16 @@ const convertToVaccinationData = (headerLines, contentLines) => {
     const personsFullyVaccinatedPerHundredIndex = headerLines.indexOf('PERSONS_FULLY_VACCINATED_PER100')
     const data = contentLines.map(line => {
         const tokens = line.split(',');
-        return {
-            data: [
-                getStringValue(tokens, regionIndex),
-                getStringValue(tokens, countryCodeIndex),
-                getIntegerValue(tokens, totalVaccinationsIndex),
-                getIntegerValue(tokens, personsVaccinatedOnePlusDoseIndex),
-                getIntegerValue(tokens, personsFullyVaccinatedIndex),
-                getFloatValue(tokens, totalVaccinationsPerHundredIndex),
-                getFloatValue(tokens, personsVaccinatedOnePlusDosePerHundredIndex),
-                getFloatValue(tokens, personsFullyVaccinatedPerHundredIndex)
-            ]
-        }
+        return [
+            getStringValue(tokens, regionIndex),
+            getStringValue(tokens, countryCodeIndex),
+            getIntegerValue(tokens, totalVaccinationsIndex),
+            getIntegerValue(tokens, personsVaccinatedOnePlusDoseIndex),
+            getIntegerValue(tokens, personsFullyVaccinatedIndex),
+            getFloatValue(tokens, totalVaccinationsPerHundredIndex),
+            getFloatValue(tokens, personsVaccinatedOnePlusDosePerHundredIndex),
+            getFloatValue(tokens, personsFullyVaccinatedPerHundredIndex)
+        ]
     })
     return {
         headers: ['region', 'countryCode', 'totalVaccinations', 'personsVaccinatedOnePlusDose', 'personsFullyVaccinated', 'totalVaccinationsPerHundred', 'personsVaccinatedOnePlusDosePerHundred', 'personsFullyVaccinatedPerHundred'],
