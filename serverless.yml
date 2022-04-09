@@ -1,5 +1,5 @@
 service: covid19-data
-frameworkVersion: '2'
+frameworkVersion: '3'
 
 package:
   exclude:
@@ -10,6 +10,8 @@ package:
     - package-lock.json
     - README.adoc
     - serverless.yml
+    - sample/**
+    - test/**
 
 provider:
   name: aws
@@ -34,7 +36,7 @@ custom:
   project: covid-19
   rootDomain: drunkard-pig.com
   siteName: data.covid-19.${self:custom.rootDomain}
-  certArn: ${opt:certArn, ''}
+  certArn:  ${param:certArn, ''}
   s3BucketLogBucket: ${self:custom.bucketName}-logs
   bucketName: ${self:custom.siteName}
   remover:
@@ -49,7 +51,8 @@ functions:
       # every 15 minutes
       - schedule: cron(0/15 * * * ? *)
     environment:
-      DATA_URL: "https://covid19.who.int/page-data/table/page-data.json"
+      COVID19_DATA_URL: "https://covid19.who.int/WHO-COVID-19-global-data.csv"
+      VACCiNATION_DATA_URL: "https://covid19.who.int/who-data/vaccination-data.csv"
       BUCKET: ${self:custom.bucketName}
       DATA_FILE_NAME: "covid19-data.gzip"
 

@@ -2,8 +2,8 @@
 This project is going to make an endpoint to provide the data of COVID-19
 
 The https://covid19.who.int/page-data/table/page-data.json[COVID-19 data^] is from https://www.who.int/[WHO^].
-However, WHO restricts its data by using CORS, so I also use the https://cors-anywhere.herokuapp.com/[CORS Anywhere^] to bypass CORS.
-Unfortunately, I found that the CORS Anywhere is not very stable that sometimes it could not be reached and there is latency issue.
+However, WHO restricts its data by using CORS, then I tried to use the https://cors-anywhere.herokuapp.com/[CORS Anywhere^] to bypass CORS.
+Unfortunately, I found that the CORS Anywhere is not very stable, and sometimes it could not be reached with latency issue.
 Therefore, I fetch the data periodically and then save it into S3, there is an endpoint hosted by me to bridge the data request to the saved data in S3.
 
 == Prerequisites
@@ -28,7 +28,7 @@ Besides, we have to create the cert in `us-east-1`
 === Deploy infrastructure
 we could run the serverless deployment to deploy the infrastructure
 
-- run `serverless deploy --stage prod --certArn {cert arn captured from above}`
+- run `serverless deploy --stage prod --param="certArn={cert arn captured from above}"`
 
 === Data endpoint
 https://data.covid-19.drunkard-pig.com/covid19-data.gzip[^]
