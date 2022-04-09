@@ -65,10 +65,9 @@ const convertToCovid19Data = (headerLines, contentLines) => {
     const cumulativeCasesIndex = headerLines.indexOf('Cumulative_cases')
     const newDeathsIndex = headerLines.indexOf('New_deaths')
     const cumulativeDeathsIndex = headerLines.indexOf('Cumulative_deaths')
-    return contentLines.map(line => {
+    const data = contentLines.map(line => {
         const tokens = line.split(',');
         return {
-            headers: ['region', 'countryCode', 'timestampInMs', 'newDeaths', 'cumulativeDeaths', 'newCases', 'cumulativeCases'],
             data: [
                 getStringValue(tokens, regionIndex),
                 getStringValue(tokens, countryCodeIndex),
@@ -80,6 +79,11 @@ const convertToCovid19Data = (headerLines, contentLines) => {
             ]
         }
     })
+
+    return {
+        headers: ['region', 'countryCode', 'timestampInMs', 'newDeaths', 'cumulativeDeaths', 'newCases', 'cumulativeCases'],
+        data: data
+    }
 }
 
 const convertToVaccinationData = (headerLines, contentLines) => {
@@ -91,10 +95,9 @@ const convertToVaccinationData = (headerLines, contentLines) => {
     const totalVaccinationsPerHundredIndex = headerLines.indexOf('TOTAL_VACCINATIONS_PER100')
     const personsVaccinatedOnePlusDosePerHundredIndex = headerLines.indexOf('PERSONS_VACCINATED_1PLUS_DOSE_PER100')
     const personsFullyVaccinatedPerHundredIndex = headerLines.indexOf('PERSONS_FULLY_VACCINATED_PER100')
-    return contentLines.map(line => {
+    const data = contentLines.map(line => {
         const tokens = line.split(',');
         return {
-            headers: ['region', 'countryCode', 'totalVaccinations', 'personsVaccinatedOnePlusDose', 'personsFullyVaccinated', 'totalVaccinationsPerHundred', 'personsVaccinatedOnePlusDosePerHundred', 'personsFullyVaccinatedPerHundred'],
             data: [
                 getStringValue(tokens, regionIndex),
                 getStringValue(tokens, countryCodeIndex),
@@ -107,6 +110,10 @@ const convertToVaccinationData = (headerLines, contentLines) => {
             ]
         }
     })
+    return {
+        headers: ['region', 'countryCode', 'totalVaccinations', 'personsVaccinatedOnePlusDose', 'personsFullyVaccinated', 'totalVaccinationsPerHundred', 'personsVaccinatedOnePlusDosePerHundred', 'personsFullyVaccinatedPerHundred'],
+        data: data
+    }
 }
 
 const getStringValue = (array, index) => array[index].trim()
