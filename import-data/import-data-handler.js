@@ -3,12 +3,11 @@
 const fetch = require('node-fetch');
 const zlib = require('zlib');
 const {saveJsonGzipToS3} = require("../common/aws-s3");
+const Papa = require('papaparse');
 
 const DATA_FILE_NAME = process.env.DATA_FILE_NAME;
 
 module.exports.importCovid19Data = async (event, context, callback) => {
-    console.log(`process.env: ${process.env}`)
-
     const covid19Data = await fetchCovid19Data()
     const vaccinationData = await fetchVaccinationData()
     const data = {
@@ -35,11 +34,9 @@ const fetchDataAndConvertIntoJson = async (url, convertFunction) => {
     const response = await fetchData(url)
     if (response.ok) {
         const content = await response.text();
-        const lines = content.split('\n')
-            .filter(l => l);
-        const headerLines = lines.shift()
-            .split(',')
-            .map(l => l.trim());
+        const lines = Papa.parse(content, {skipEmptyLines: true,}).data
+            .map(tokens => tokens.map(token => token.trim()));
+        const headerLines = lines.shift();
         return convertFunction(headerLines, lines);
     } else {
         throw new Error(`Failed to fetch ${response.url}: ${response.status} ${response.statusText}`);
@@ -65,18 +62,24 @@ const convertToCovid19Data = (headerLines, contentLines) => {
     const cumulativeCasesIndex = headerLines.indexOf('Cumulative_cases')
     const newDeathsIndex = headerLines.indexOf('New_deaths')
     const cumulativeDeathsIndex = headerLines.indexOf('Cumulative_deaths')
-    const data = contentLines.map(line => {
-        const tokens = line.split(',');
+    let totalCases = 0
+    let totalDeaths = 0
+    const data = contentLines.map(tokens => {
+        const deaths = getIntegerValue(tokens, newDeathsIndex);
+        const cases = getIntegerValue(tokens, newCasesIndex);
+        totalCases += cases
+        totalDeaths += deaths
         return [
             getStringValue(tokens, regionIndex),
             getStringValue(tokens, countryCodeIndex),
             new Date(getStringValue(tokens, dateIndex)).getTime(),
-            getIntegerValue(tokens, newDeathsIndex),
+            deaths,
             getIntegerValue(tokens, cumulativeDeathsIndex),
-            getIntegerValue(tokens, newCasesIndex),
+            cases,
             getIntegerValue(tokens, cumulativeCasesIndex)
         ]
     })
+    console.log(`in CSV - totalCases: ${totalCases} and totalDeaths: ${totalDeaths}`)
 
     return {
         headers: ['region', 'countryCode', 'timestampInMs', 'newDeaths', 'cumulativeDeaths', 'newCases', 'cumulativeCases'],
@@ -93,8 +96,7 @@ const convertToVaccinationData = (headerLines, contentLines) => {
     const totalVaccinationsPerHundredIndex = headerLines.indexOf('TOTAL_VACCINATIONS_PER100')
     const personsVaccinatedOnePlusDosePerHundredIndex = headerLines.indexOf('PERSONS_VACCINATED_1PLUS_DOSE_PER100')
     const personsFullyVaccinatedPerHundredIndex = headerLines.indexOf('PERSONS_FULLY_VACCINATED_PER100')
-    const data = contentLines.map(line => {
-        const tokens = line.split(',');
+    const data = contentLines.map(tokens => {
         return [
             getStringValue(tokens, regionIndex),
             getStringValue(tokens, countryCodeIndex),
